@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Main {
@@ -72,13 +73,11 @@ public class Main {
 
             average = listSum / listSize;
 
+            Collections.sort(list);
             if (listSize % 2 == 0) {
-                float halfSum = (list.get(listSize / 2) +
-                        list.get(listSize / 2 - 1));
-                median = halfSum / 2;
-            }
-            else {
-                median = Float.valueOf(list.get(listSize / 2));
+                median = ((float) list.get(listSize / 2) + list.get(listSize / 2 - 1)) / 2;
+            } else {
+                median = (float) list.get(listSize / 2);
             }
 
         } catch (IOException e) {
