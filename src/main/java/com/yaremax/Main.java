@@ -49,13 +49,19 @@ public class Main {
                     min = number;
                 }
 
-                if (currentAsc.isEmpty() || number > currentAsc.getLast()) {
+                if (currentAsc.isEmpty() || number > currentAsc.get(currentAsc.size() - 1)) {
                     currentAsc.add(number);
-                } else currentAsc.clear();
+                } else {
+                    currentAsc = new ArrayList<>();
+                    currentAsc.add(number);
+                }
 
-                if (currentDesc.isEmpty() || number < currentDesc.getLast()) {
+                if (currentDesc.isEmpty() || number < currentDesc.get(currentDesc.size() - 1)) {
                     currentDesc.add(number);
-                } else currentDesc.clear();
+                } else {
+                    currentDesc = new ArrayList<>();
+                    currentDesc.add(number);
+                }
 
                 if (currentAsc.size() > longestAsc.size()) longestAsc = new ArrayList<>(currentAsc);
                 if (currentDesc.size() > longestDesc.size()) longestDesc = new ArrayList<>(currentDesc);
