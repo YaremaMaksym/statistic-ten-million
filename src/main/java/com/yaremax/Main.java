@@ -18,23 +18,24 @@ public class Main {
     }
 
     public static void foo(String path) {
-        int listSize = 0;
         Long min = null;
         Long max = null;
         double median = 0;
         double average = 0;
 
         List<Long> longestAsc = new ArrayList<>();
-        List<Long> currentAsc = new ArrayList<>();
         List<Long> longestDesc = new ArrayList<>();
-        List<Long> currentDesc = new ArrayList<>();
 
         try (BufferedReader br = Files.newBufferedReader(Paths.get(path))) {
-            PriorityQueue<Long> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder()); // max heap
-            PriorityQueue<Long> upperHalf = new PriorityQueue<>(); // min heap
+            PriorityQueue<Long> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder());
+            PriorityQueue<Long> upperHalf = new PriorityQueue<>();
+
+            List<Long> currentAsc = new ArrayList<>();
+            List<Long> currentDesc = new ArrayList<>();
+
             String line;
             long number;
-            float listSum = 0;
+            int listSize;
             double listSum = 0;
 
             while ((line = br.readLine()) != null) {
@@ -43,6 +44,7 @@ public class Main {
                 listSum += number;
 
 
+                // get min and max
                 if (max == null || number > max) {
                     max = number;
                 }
@@ -51,14 +53,15 @@ public class Main {
                 }
 
 
-                if (currentAsc.isEmpty() || number > currentAsc.get(currentAsc.size() - 1)) {
+                // get longest ascending and descending sequences
+                if (currentAsc.isEmpty() || number > currentAsc.getLast()) {
                     currentAsc.add(number);
                 } else {
                     currentAsc = new ArrayList<>();
                     currentAsc.add(number);
                 }
 
-                if (currentDesc.isEmpty() || number < currentDesc.get(currentDesc.size() - 1)) {
+                if (currentDesc.isEmpty() || number < currentDesc.getLast()) {
                     currentDesc.add(number);
                 } else {
                     currentDesc = new ArrayList<>();
@@ -70,14 +73,14 @@ public class Main {
 
 
 
-                // Add number to one of the heaps
+                // Add number to one of the heaps (for getting median)
                 if (lowerHalf.isEmpty() || number <= lowerHalf.peek()) {
                     lowerHalf.add(number);
                 } else {
                     upperHalf.add(number);
                 }
 
-                // Balance the heaps (so they always have equal size, or one is larger by one)
+                // Balance the heaps (for getting median)
                 while (lowerHalf.size() < upperHalf.size()) {
                     lowerHalf.add(upperHalf.poll());
                 }
@@ -86,14 +89,14 @@ public class Main {
                 }
             }
 
-
+            // get median
             if (lowerHalf.size() > upperHalf.size()) {
                 median = lowerHalf.peek();
             } else {
                 median = lowerHalf.peek() + upperHalf.peek() / 2;
             }
 
-
+            // get average
             listSize = lowerHalf.size() + upperHalf.size();
             average = listSum / listSize;
 
