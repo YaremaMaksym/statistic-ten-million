@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -20,7 +18,6 @@ public class Main {
     }
 
     public static void foo(String path) {
-        List<Long> list = new ArrayList<>();
         int listSize = 0;
         Long min = null;
         Long max = null;
@@ -33,15 +30,17 @@ public class Main {
         List<Long> currentDesc = new ArrayList<>();
 
         try (BufferedReader br = Files.newBufferedReader(Paths.get(path))) {
+            PriorityQueue<Long> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder()); // max heap
+            PriorityQueue<Long> upperHalf = new PriorityQueue<>(); // min heap
             String line;
             long number;
             float listSum = 0;
 
             while ((line = br.readLine()) != null) {
                 number = Long.parseLong(line);
-                list.add(number);
 
                 listSum += number;
+
 
                 if (max == null || number > max) {
                     max = number;
@@ -49,6 +48,7 @@ public class Main {
                 if (min == null || number < min) {
                     min = number;
                 }
+
 
                 if (currentAsc.isEmpty() || number > currentAsc.get(currentAsc.size() - 1)) {
                     currentAsc.add(number);
@@ -67,18 +67,34 @@ public class Main {
                 if (currentAsc.size() > longestAsc.size()) longestAsc = new ArrayList<>(currentAsc);
                 if (currentDesc.size() > longestDesc.size()) longestDesc = new ArrayList<>(currentDesc);
 
+
+
+                // Add number to one of the heaps
+                if (lowerHalf.isEmpty() || number <= lowerHalf.peek()) {
+                    lowerHalf.add(number);
+                } else {
+                    upperHalf.add(number);
+                }
+
+                // Balance the heaps (so they always have equal size, or one is larger by one)
+                while (lowerHalf.size() < upperHalf.size()) {
+                    lowerHalf.add(upperHalf.poll());
+                }
+                while (lowerHalf.size() > upperHalf.size() + 1) {
+                    upperHalf.add(lowerHalf.poll());
+                }
             }
 
-            listSize = list.size();
 
-            average = listSum / listSize;
-
-            Collections.sort(list);
-            if (listSize % 2 == 0) {
-                median = ((float) list.get(listSize / 2) + list.get(listSize / 2 - 1)) / 2;
+            if (lowerHalf.size() > upperHalf.size()) {
+                median = lowerHalf.peek();
             } else {
-                median = (float) list.get(listSize / 2);
+                median = lowerHalf.peek() + upperHalf.peek() / 2;
             }
+
+
+            listSize = lowerHalf.size() + upperHalf.size();
+            average = listSum / listSize;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
