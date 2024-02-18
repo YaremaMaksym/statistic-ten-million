@@ -21,8 +21,8 @@ public class Main {
         int listSize = 0;
         Long min = null;
         Long max = null;
-        float median = 0;
-        float average = 0;
+        double median = 0;
+        double average = 0;
 
         List<Long> longestAsc = new ArrayList<>();
         List<Long> currentAsc = new ArrayList<>();
@@ -35,6 +35,7 @@ public class Main {
             String line;
             long number;
             float listSum = 0;
+            double listSum = 0;
 
             while ((line = br.readLine()) != null) {
                 number = Long.parseLong(line);
