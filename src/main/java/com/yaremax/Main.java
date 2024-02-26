@@ -27,8 +27,8 @@ public class Main {
         List<Long> longestDesc = new ArrayList<>();
 
         try (BufferedReader br = Files.newBufferedReader(Paths.get(path))) {
-            PriorityQueue<Long> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder());
-            PriorityQueue<Long> upperHalf = new PriorityQueue<>();
+            PriorityQueue<Long> lowerHalf = new PriorityQueue<>(Comparator.reverseOrder()); // max heap
+            PriorityQueue<Long> upperHalf = new PriorityQueue<>(); // min heap
 
             List<Long> currentAsc = new ArrayList<>();
             List<Long> currentDesc = new ArrayList<>();
@@ -93,7 +93,7 @@ public class Main {
             if (lowerHalf.size() > upperHalf.size()) {
                 median = lowerHalf.peek();
             } else {
-                median = lowerHalf.peek() + upperHalf.peek() / 2;
+                median = (lowerHalf.peek() + upperHalf.peek()) / 2.0;
             }
 
             // get average
